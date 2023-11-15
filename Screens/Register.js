@@ -14,8 +14,34 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
-export default function App({ navigation }) {
+import { useState } from "react";
+export default function App({navigation}) {
+  const [tk,settk]=useState("");
+  const [mk,setmk]=useState("");
+  const [user,setusser] = useState("")
+  function dangKy(){
+    if(user&&tk&&mk){
+      fetch("https://nt93tv-8080.csb.app/logins",{
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: user,email:tk,password :mk}),
+      })
+      .then((response) => response.json())
+        .then((data) => {
+          // Xử lý phản hồi từ API
+          navigation.navigate("Login");
+        })
+        .catch((error) => {
+          console.error("Có lỗi xảy ra: ", error);
+        });
+    }
+    else{
+      console.log("vui lòng làm đầy đủ tt")
+    }
+   
+  }
   return (
     <View style={styles.container}>
       <View style={{ width: "90%", height: "60%", alignItems: "center" }}>
@@ -49,6 +75,7 @@ export default function App({ navigation }) {
               }}
             />
             <TextInput
+            onChangeText={setusser}
               style={{ margin: "auto", width: "100%", height: "50px" }}
               placeholder="Enter user"
             />
@@ -74,6 +101,7 @@ export default function App({ navigation }) {
               }}
             />
             <TextInput
+            onChangeText={settk}
               style={{ margin: "auto", width: "100%", height: "50px" }}
               placeholder="Enter email"
             />
@@ -99,6 +127,7 @@ export default function App({ navigation }) {
               }}
             />
             <TextInput
+            onChangeText={setmk}
               style={{ margin: "auto", width: "100%", height: "50px" }}
               placeholder="Enter password"
             />
@@ -118,13 +147,16 @@ export default function App({ navigation }) {
 
         <View style={{ justifyContent: "center" }}>
           <TouchableOpacity
+          onPress={()=>{
+            dangKy()
+          }}
             style={{
               marginTop: "10px",
               borderWidth: 1,
               borderRadius: 1,
               width: "60%",
               height: "40px",
-              backgroundColor: "#7cfc00",
+              backgroundColor: "#ff6347",
               justifyContent: "center",
               borderRadius: "20px",
               marginLeft: "50px",
@@ -138,48 +170,21 @@ export default function App({ navigation }) {
                 fontSize: "20px",
               }}
             >
-              LOGIN
+              REGISTER
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text
-              style={{ color: "#9932cc", fontWeight: "20px", fontSize: "20px" }}
-            >
-              For got your password?
-            </Text>
-          </TouchableOpacity>
-          <Text
-            style={{ margin: "auto", fontWeight: "20px", fontSize: "20px" }}
-          >
-            Or login with
-          </Text>
-
-          <TouchableOpacity style={{ marginTop: "50px", margin: "auto" }}>
-            <Image
-              source={require("../assets/google.png")}
-              style={{
-                margin: "auto",
-                width: "40px",
-                height: "40px",
-                resizeMode: "contain",
-              }}
-            />
           </TouchableOpacity>
           <TouchableOpacity>
             <Text
               style={{
                 margin: "auto",
-                marginLeft: "50px",
+                marginLeft: "40px",
                 fontWeight: "20px",
                 fontSize: "20px",
               }}
             >
-              Or register by
+              Or "Already have an account?"
             </Text>
             <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Register");
-              }}
               style={{
                 marginTop: "10px",
                 marginLeft: "50px",
@@ -187,7 +192,7 @@ export default function App({ navigation }) {
                 borderRadius: 1,
                 width: "60%",
                 height: "40px",
-                backgroundColor: "#ff6347",
+                backgroundColor: "#7cfc00",
                 justifyContent: "center",
                 borderRadius: "20px",
               }}
@@ -200,7 +205,7 @@ export default function App({ navigation }) {
                   fontSize: "20px",
                 }}
               >
-                REGISTER
+                LOGIN
               </Text>
             </TouchableOpacity>
           </TouchableOpacity>
